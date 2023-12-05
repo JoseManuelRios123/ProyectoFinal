@@ -14,7 +14,7 @@
         @method('PUT')
         <div class="modal-body">
           <div class="mb-3">
-            <label for="" class="form-label">Cliente Asociado</label>
+            <label for="idClientes" class="form-label">Cliente Asociado</label>
             <select name="idClientes" class="form-control">
               @foreach ($clientes as $cliente)
               <option value="{{ $cliente->id_cliente }}" {{ $proyecto->idClientes == $cliente->id_cliente ? 'selected' : '' }}>
@@ -24,7 +24,7 @@
             </select>
           </div>
           <div class="mb-3">
-            <label for="" class="form-label">Asesor a Cargo</label>
+            <label for="idAsesores" class="form-label">Asesor a Cargo</label>
             <select name="idAsesores" class="form-control">
               @foreach ($asesores as $asesor)
               <option value="{{ $asesor->id_asesor }}" {{ $proyecto->idAsesores == $asesor->id_asesor ? 'selected' : '' }}>

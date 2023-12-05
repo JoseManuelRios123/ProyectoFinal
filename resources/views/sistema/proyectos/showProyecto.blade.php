@@ -31,9 +31,9 @@
                             <button type="submit" class="btn btn-outline-primary hh">Subir</button>
                             <select id="carpeta" name="carpeta" class="form-control w-fit">
                                 <option value="">Seleccione una Carpeta</option>
+                                <option value="planear">Planear</option>
                                 <option value="hacer">Hacer</option>
                                 <option value="verificar">Verificar</option>
-                                <option value="planear">Planear</option>
                                 <option value="actuar">Actuar</option>
                             </select>
                             <div class="custom-file">
@@ -68,34 +68,93 @@
                                         <table class="table table-striped mb-0">
                                             <thead style="background-color: #3F96FF; ">
                                                 <tr>
+                                                    <th scope="col">Planear</th>
                                                     <th scope="col">Hacer</th>
                                                     <th scope="col">Verificar</th>
-                                                    <th scope="col">Planear</th>
                                                     <th scope="col">Actuar</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 <tr>
                                                     <td>
+                                                        @foreach ($proyectos->planearArchivos as $archivo)
+                                                        @can('Ver Evidencias')
+                                                        <p>{{ $archivo->nombre }} </p>
+                                                        <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#show{{ $archivo->id_archivo }}">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
+                                                                <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z" />
+                                                                <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z" />
+                                                            </svg>
+                                                        </a>
+                                                        <div class="modal fade" id="show{{$archivo->id_archivo}}" tabindex="-1" role="dialog" aria-labelledby="detallesArchivoModalLabel" aria-hidden="true">
+                                                            <div class="modal-dialog" role="document">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title" id="detallesArchivoModalLabel">Detalles del Archivo</h5>
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                            <span aria-hidden="true">&times;</span>
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <p>{{ $archivo->nombre }} </p>
+                                                                        <p>Subido por: {{ $archivo->usuario->name }}</p>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        @can('Descargar Evidencias')
+                                                                        <a class="btn btn-outline-primary" href="{{ route('proyectos.archivos.downloadFile', ['id' => $archivo->id_archivo]) }}">
+                                                                            Descargar
+                                                                        </a>
+                                                                        @endcan
+                                                                        @can('Eliminar Evidencias')
+                                                                        <a class="btn btn-outline-danger" href="{{ route('proyectos.archivos.deleteFile', ['id' => $archivo->id_archivo]) }}">
+                                                                            Eliminar
+                                                                        </a>
+                                                                        @endcan
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        @endcan
+                                                        @endforeach
+                                                    </td>
+                                                    <td>
                                                         @foreach ($proyectos->hacerArchivos as $archivo)
                                                         @can('Ver Evidencias')
                                                         <p>{{ $archivo->nombre }} </p>
-                                                        @endcan
-                                                        @can('Descargar Evidencias')
-                                                        <a href="{{ route('proyectos.archivos.downloadFile', ['id' => $archivo->id_archivo]) }}">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="17" fill="currentColor" class="bi bi-box-arrow-in-down" viewBox="0 0 16 16">
-                                                                <path fill-rule="evenodd" d="M3.5 6a.5.5 0 0 0-.5.5v8a.5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5v-8a.5.5 0 0 0-.5-.5h-2a.5.5 0 0 1 0-1h2A1.5 1.5 0 0 1 14 6.5v8a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 14.5v-8A1.5 1.5 0 0 1 3.5 5h2a.5.5 0 0 1 0 1h-2z" />
-
-                                                                <path fill-rule="evenodd" d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z" />
+                                                        <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#show{{ $archivo->id_archivo }}">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
+                                                                <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z" />
+                                                                <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z" />
                                                             </svg>
                                                         </a>
-                                                        @endcan
-                                                        @can('Eliminar Evidencias')
-                                                        <a class="text-danger" href="{{ route('proyectos.archivos.deleteFile', ['id' => $archivo->id_archivo]) }}">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="17" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
-                                                                <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z" />
-                                                            </svg>
-                                                        </a>
+                                                        <div class="modal fade" id="show{{$archivo->id_archivo}}" tabindex="-1" role="dialog" aria-labelledby="detallesArchivoModalLabel" aria-hidden="true">
+                                                            <div class="modal-dialog" role="document">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title" id="detallesArchivoModalLabel">Detalles del Archivo</h5>
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                            <span aria-hidden="true">&times;</span>
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <p>{{ $archivo->nombre }} </p>
+                                                                        <p>Subido por: {{ $archivo->usuario->name }}</p>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        @can('Descargar Evidencias')
+                                                                        <a class="btn btn-outline-primary" href="{{ route('proyectos.archivos.downloadFile', ['id' => $archivo->id_archivo]) }}">
+                                                                            Descargar
+                                                                        </a>
+                                                                        @endcan
+                                                                        @can('Eliminar Evidencias')
+                                                                        <a class="btn btn-outline-danger" href="{{ route('proyectos.archivos.deleteFile', ['id' => $archivo->id_archivo]) }}">
+                                                                            Eliminar
+                                                                        </a>
+                                                                        @endcan
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                         @endcan
                                                         @endforeach
                                                     </td>
@@ -104,47 +163,40 @@
                                                         @foreach ($proyectos->verificarArchivos as $archivo)
                                                         @can('Ver Evidencias')
                                                         <p>{{ $archivo->nombre }} </p>
-                                                        @endcan
-                                                        @can('Descargar Evidencias')
-                                                        <a href="{{ route('proyectos.archivos.downloadFile', ['id' => $archivo->id_archivo]) }}">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="17" fill="currentColor" class="bi bi-box-arrow-in-down" viewBox="0 0 16 16">
-                                                                <path fill-rule="evenodd" d="M3.5 6a.5.5 0 0 0-.5.5v8a.5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5v-8a.5.5 0 0 0-.5-.5h-2a.5.5 0 0 1 0-1h2A1.5 1.5 0 0 1 14 6.5v8a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 14.5v-8A1.5 1.5 0 0 1 3.5 5h2a.5.5 0 0 1 0 1h-2z" />
-
-                                                                <path fill-rule="evenodd" d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z" />
+                                                        <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#show{{ $archivo->id_archivo }}">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
+                                                                <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z" />
+                                                                <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z" />
                                                             </svg>
                                                         </a>
-                                                        @endcan
-                                                        @can('Eliminar Evidencias')
-                                                        <a class="text-danger" href="{{ route('proyectos.archivos.deleteFile', ['id' => $archivo->id_archivo]) }}">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="17" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
-                                                                <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z" />
-                                                            </svg>
-                                                        </a>
-                                                        @endcan
-                                                        @endforeach
-
-                                                    </td>
-
-                                                    <td>
-                                                        @foreach ($proyectos->planearArchivos as $archivo)
-                                                        @can('Ver Evidencias')
-                                                        <p>{{ $archivo->nombre }} </p>
-                                                        @endcan
-                                                        @can('Descargar Evidencias')
-                                                        <a href="{{ route('proyectos.archivos.downloadFile', ['id' => $archivo->id_archivo]) }}">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="17" fill="currentColor" class="bi bi-box-arrow-in-down" viewBox="0 0 16 16">
-                                                                <path fill-rule="evenodd" d="M3.5 6a.5.5 0 0 0-.5.5v8a.5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5v-8a.5.5 0 0 0-.5-.5h-2a.5.5 0 0 1 0-1h2A1.5 1.5 0 0 1 14 6.5v8a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 14.5v-8A1.5 1.5 0 0 1 3.5 5h2a.5.5 0 0 1 0 1h-2z" />
-
-                                                                <path fill-rule="evenodd" d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z" />
-                                                            </svg>
-                                                        </a>
-                                                        @endcan
-                                                        @can('Eliminar Evidencias')
-                                                        <a class="text-danger" href="{{ route('proyectos.archivos.deleteFile', ['id' => $archivo->id_archivo]) }}">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="17" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
-                                                                <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z" />
-                                                            </svg>
-                                                        </a>
+                                                        <div class="modal fade" id="show{{$archivo->id_archivo}}" tabindex="-1" role="dialog" aria-labelledby="detallesArchivoModalLabel" aria-hidden="true">
+                                                            <div class="modal-dialog" role="document">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title" id="detallesArchivoModalLabel">Detalles del Archivo</h5>
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                            <span aria-hidden="true">&times;</span>
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <p>{{ $archivo->nombre }} </p>
+                                                                        <p>Subido por: {{ $archivo->usuario->name }}</p>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        @can('Descargar Evidencias')
+                                                                        <a class="btn btn-outline-primary" href="{{ route('proyectos.archivos.downloadFile', ['id' => $archivo->id_archivo]) }}">
+                                                                            Descargar
+                                                                        </a>
+                                                                        @endcan
+                                                                        @can('Eliminar Evidencias')
+                                                                        <a class="btn btn-outline-danger" href="{{ route('proyectos.archivos.deleteFile', ['id' => $archivo->id_archivo]) }}">
+                                                                            Eliminar
+                                                                        </a>
+                                                                        @endcan
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                         @endcan
                                                         @endforeach
                                                     </td>
@@ -152,22 +204,40 @@
                                                         @foreach($proyectos->actuarArchivos as $archivo)
                                                         @can('Ver Evidencias')
                                                         <p>{{ $archivo->nombre }} </p>
-                                                        @endcan
-                                                        @can('Descargar Evidencias')
-                                                        <a href="{{ route('proyectos.archivos.downloadFile', ['id' => $archivo->id_archivo]) }}">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="17" fill="currentColor" class="bi bi-box-arrow-in-down" viewBox="0 0 16 16">
-                                                                <path fill-rule="evenodd" d="M3.5 6a.5.5 0 0 0-.5.5v8a.5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5v-8a.5.5 0 0 0-.5-.5h-2a.5.5 0 0 1 0-1h2A1.5 1.5 0 0 1 14 6.5v8a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 14.5v-8A1.5 1.5 0 0 1 3.5 5h2a.5.5 0 0 1 0 1h-2z" />
-
-                                                                <path fill-rule="evenodd" d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z" />
+                                                        <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#show{{ $archivo->id_archivo }}">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
+                                                                <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z" />
+                                                                <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z" />
                                                             </svg>
                                                         </a>
-                                                        @endcan
-                                                        @can('Eliminar Evidencias')
-                                                        <a class="text-danger" href="{{ route('proyectos.archivos.deleteFile', ['id' => $archivo->id_archivo]) }}">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="17" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
-                                                                <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z" />
-                                                            </svg>
-                                                        </a>
+                                                        <div class="modal fade" id="show{{$archivo->id_archivo}}" tabindex="-1" role="dialog" aria-labelledby="detallesArchivoModalLabel" aria-hidden="true">
+                                                            <div class="modal-dialog" role="document">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title" id="detallesArchivoModalLabel">Detalles del Archivo</h5>
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                            <span aria-hidden="true">&times;</span>
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <p>{{ $archivo->nombre }} </p>
+                                                                        <p>Subido por: {{ $archivo->usuario->name }}</p>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        @can('Descargar Evidencias')
+                                                                        <a class="btn btn-outline-primary" href="{{ route('proyectos.archivos.downloadFile', ['id' => $archivo->id_archivo]) }}">
+                                                                            Descargar
+                                                                        </a>
+                                                                        @endcan
+                                                                        @can('Eliminar Evidencias')
+                                                                        <a class="btn btn-outline-danger" href="{{ route('proyectos.archivos.deleteFile', ['id' => $archivo->id_archivo]) }}">
+                                                                            Eliminar
+                                                                        </a>
+                                                                        @endcan
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                         @endcan
                                                         @endforeach
 

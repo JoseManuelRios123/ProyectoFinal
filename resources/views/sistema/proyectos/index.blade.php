@@ -35,6 +35,7 @@
                         <th scope="col">Asesor a Cargo</th>
                         <th scope="col">Nombre Proyecto</th>
                         <th scope="col">Riesgo</th>
+                        <th scope="col">Progreso</th>
                         <th scope="col">Acciones</th>
 
                     </tr>
@@ -47,6 +48,11 @@
                         <td> {{$proyecto->asesore->nombre_asesor}} </td>
                         <td> {{$proyecto->Nombre}} </td>
                         <td> {{$proyecto->Riesgo}} </td>
+                        <td>
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" style="width: '{{$proyecto->Progreso}};'" aria-valuenow="{{$proyecto->Progreso}}" aria-valuemin="0" aria-valuemax="100">{{$proyecto->Progreso}}%</div>
+                            </div>
+                        </td>
                         <td>
                             @can('Ver Actividades')
                             <a class="btn btn-outline-success" href="{{ route('proyectos.show', $proyecto->idProyecto) }}">

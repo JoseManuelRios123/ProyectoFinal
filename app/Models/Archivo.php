@@ -40,4 +40,9 @@ class Archivo extends Model
 	{
 		return $this->belongsTo(Carpeta::class);
 	}
+	
+	public function usuario()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

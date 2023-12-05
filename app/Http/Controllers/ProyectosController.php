@@ -16,6 +16,7 @@ use App\Models\Cliente;
 use App\Models\Asesore;
 use App\Models\Carpeta;
 use App\Models\Plandetrabajo;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
@@ -85,6 +86,7 @@ class ProyectosController extends Controller
         $proyectos->idAsesores = $request->input('idAsesores');
         $proyectos->Nombre = $request->input('Nombre');
         $proyectos->Riesgo = $request->input('Riesgos');
+        $proyectos->Progreso = $request->input('Progreso', 0);
         $proyectos->save();
 
         $carpetas = ['hacer', 'planear', 'verificar', 'actuar'];
@@ -179,6 +181,8 @@ class ProyectosController extends Controller
                     $nuevoArchivo->nombre = $archivo->getClientOriginalName();
                     $nuevoArchivo->ruta = $rutaArchivo;
                     $nuevoArchivo->carpeta_id = Carpeta::where('id_Proyecto', $proyectos->idProyecto)->where('nombre', $carpeta)->first()->id_carpeta;
+                    $nuevoArchivo->user_id = $request->user()->id;
+
                     $nuevoArchivo->save();
                 }
             }
@@ -229,13 +233,18 @@ class ProyectosController extends Controller
 
     public function showFiles($evidenciaId)
     {
-        $proyectos = Proyecto::findOrFail($evidenciaId);
-        $carpetas = $proyectos->carpetas;
+        $proyecto = Proyecto::findOrFail($evidenciaId);
+        $carpetas = $proyecto->carpetas;
 
-        return view('archivos.show', compact('proyectos','evidencia', 'carpetas'));
+        // Cargar la relación 'carpetas.archivos.usuario' para evitar consultas adicionales
+        $proyecto->load('carpetas.archivos.usuario');
+
+        return view('archivos.show', compact('proyecto', 'carpetas'));
     }
 
-    public function edit( $id)
+
+
+    public function edit($id)
     {
         $proyectos = Proyecto::findOrFail($id);
         return view('Evidencia.edit', compact('evidencia'));
@@ -255,6 +264,7 @@ class ProyectosController extends Controller
         $proyectos->idAsesores = $request->input('idAsesores');
         $proyectos->Nombre = $request->input('Nombre');
         $proyectos->Riesgo = $request->input('Riesgos');
+        $proyectos->Progreso = $request->input('Progreso');
         $proyectos->update($request->all());
         return redirect()->back();
     }
@@ -265,4 +275,41 @@ class ProyectosController extends Controller
         $proyectos->delete();
         return redirect()->back()->with('status', 'Proyecto eliminado exitosamente');
     }
+
+    
+    public function approve($id)
+    {
+        $plandework = Plandetrabajo::find($id);
+        $plandework->status = true;
+        $plandework->save();
+
+        $this->calculateProjectProgress($plandework->id_proyecto);
+
+        return response()->json(['success' => true]);
+    }
+
+    public function reject($id)
+    {
+        $plandework = Plandetrabajo::find($id);
+        $plandework->status = false;
+        $plandework->save();
+
+        $this->calculateProjectProgress($plandework->id_proyecto);
+
+        return response()->json(['success' => true]);
+    }
+
+    public function calculateProjectProgress($projectId)
+    {
+        $aprobadas = Plandetrabajo::where('id_proyecto', $projectId)->where('status', true)->count();
+        $totalActividades = Plandetrabajo::where('id_proyecto', $projectId)->count();
+
+        $progreso = $totalActividades > 0 ? ($aprobadas / $totalActividades) * 100 : 0;
+
+        // Actualizar el progreso en la tabla de proyectos
+        $proyectos = Proyecto::find($projectId);
+        $proyectos->Progreso = $progreso;
+        $proyectos->save();
+    }
+
 }

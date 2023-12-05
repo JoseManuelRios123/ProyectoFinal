@@ -84,6 +84,8 @@ Route::get('proyectos/{id}/plandework/', [PDTController::class, 'show'])->name('
 Route::get('proyectos/{id}/plandework/create', [PDTController::class, 'create'])->name('proyectos.plandework.create');
 Route::post('proyectos/{id}/plandework', [PDTController::class, 'store'])->name('proyectos.plandework.store');
 Route::get('proyectos/evidencia/{id}', [ProyectosController::class, 'showProyecto'])->name('proyectos.evidencia.show');
+Route::post('proyectos/{id}/approve', [PDTController::class, 'approve']);
+Route::post('proyectos/{id}/reject', [PDTController::class, 'reject']);
 
 // Rutas para Evidencias
 Route::post('proyectos/evidencia/{id}/upload', [ProyectosController::class, 'uploadFiles'])->name('proyectos.evidencia.uploadFiles');
@@ -92,12 +94,6 @@ Route::get('proyectos/descargar-archivo/{id}', [ProyectosController::class, 'dow
 Route::get('proyectos/archivos/delete/{id}', [ProyectosController::class, 'deleteFile'])->name('proyectos.archivos.deleteFile');
 Route::get('proyectos/archivos/{archivosId}', [ProyectosController::class, 'showFiles'])->name('proyectos.archivos.showFiles');
 
-// Rutas para editar evidencias
-Route::get('proyectos/plandework/evidencia/{id}/edit', [ProyectosController::class, 'edit'])->name('proyectos.plandework.evidencia.edit');
-Route::put('proyectos/plandework/evidencias/{id}', [ProyectosController::class, 'update'])->name('proyectos.plandework.evidencia.update');
-
-// Ruta para actualizar el estatus
-Route::get('proyectos/plandework/evidencia/{id}/estatus', [ProyectosController::class, 'UpdateStatus'])->name('proyectos.plandework.evidencia.UpdateStatus');
 
 });
 Route::middleware([

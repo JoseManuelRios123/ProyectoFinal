@@ -79,6 +79,7 @@
             Eliminar Proyectos
         </label>
     <br>
+    <br>
     <label>
     {!! Form::checkbox('permisos[]', 'Ver Actividades', $roles->hasPermissionTo('Ver Actividades') ? : false, ['class'=>'mr-1', 'id' => 'verActividades']) !!}
     Ver Actividades
@@ -95,6 +96,10 @@
         <label>
             {!! Form::checkbox('permisos[]', 'Eliminar Actividades', $roles->hasPermissionTo('Eliminar Actividades') ? : false, ['class'=>'mr-1']) !!}
             Eliminar Actividades
+        </label>
+        <label>
+            {!! Form::checkbox('permisos[]', 'Aprobar Actividades', $roles->hasPermissionTo('Aprobar Actividades') ? : false, ['class'=>'mr-1']) !!}
+            Aprobar Actividades
         </label>
     </div>
     <br>
@@ -115,10 +120,7 @@
         {!! Form::checkbox('permisos[]', 'Eliminar Evidencias', $roles->hasPermissionTo('Eliminar Evidencias') ? : false, ['class'=>'mr-1']) !!}
         Eliminar Evidencias
     </label>
-    </div>
-    <br>
-    
-    <br>
+    </div>    
     </div>
     <br>
     <label>

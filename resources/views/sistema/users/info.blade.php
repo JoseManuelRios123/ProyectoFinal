@@ -46,29 +46,3 @@
         </div>
     </div>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-<form action="{{ route('users.destroy', $user->id) }}" method="post" enctype="multipart/form-data" id="eliminarUserForm{{$user->id}}">
-    @csrf
-    @method('DELETE')
-    <script>
-        function confirmarEliminacion(idUser) {
-            Swal.fire({
-                title: 'Eliminar Usuario',
-                text: '¿Estás seguro de eliminar este Usuario?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Sí, eliminar',
-                cancelButtonText: 'Cancelar'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Si el usuario confirma, enviar el formulario de eliminación
-                    document.getElementById('eliminarUserForm' + idUser).submit();
-                }
-            });
-        }
-    </script>
-</form>

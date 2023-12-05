@@ -25,7 +25,7 @@ class PermisoController extends Controller
     }
 
     public function createAllPermisos() {
-        $permisos = ['Ver Clientes', 'Crear Cliente', 'Editar Cliente', 'Eliminar Cliente', 'Ver Asesores', 'Crear Asesores', 'Editar Asesores', 'Eliminar Asesores', 'Ver Proyectos' , 'Ver Carpetas', 'Crear Proyectos', 'Editar Proyectos', 'Eliminar Proyectos', 'Ver Actividades', 'Crear Actividades', 'Editar Actividades', 'Eliminar Actividades', 'Ver Evidencias', 'Subir Evidencias', 'Eliminar Evidencias', 'Descargar Evidencias', 'Admin Configuracion'];
+        $permisos = ['Ver Clientes', 'Crear Cliente', 'Editar Cliente', 'Eliminar Cliente', 'Ver Asesores', 'Crear Asesores', 'Editar Asesores', 'Eliminar Asesores', 'Ver Proyectos' , 'Ver Carpetas', 'Crear Proyectos', 'Editar Proyectos', 'Eliminar Proyectos', 'Ver Actividades', 'Crear Actividades', 'Editar Actividades', 'Eliminar Actividades', 'Ver Evidencias', 'Subir Evidencias', 'Eliminar Evidencias', 'Descargar Evidencias', 'Aprobar Actividades', 'Admin Configuracion'];
     
         foreach($permisos as $permiso) {
             if (!Permission::where('name', $permiso)->exists()) {

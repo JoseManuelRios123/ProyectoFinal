@@ -71,21 +71,21 @@ Route::resource('permisos', PermisoController::class);
 Route::resource('usuarios', AsignarController::class)->names('asignar');
 Route::resource('users', UserController::class);
 Route::post('/create-all-permisos', [PermisoController::class, 'createAllPermisos'])->name('create-all-permisos');
-
 });
-
 
 Route::get('proyectos', [ProyectosController::class, 'index'])->name('proyectos.index');
 Route::get('proyectos.create', [ProyectosController::class, 'create'])->name('proyectos.create');
 Route::post('proyectos', [ProyectosController::class, 'store'])->name('proyectos.store');
 Route::get('proyectos/{id}', [ProyectosController::class, 'show'])->name('proyectos.show');
+Route::post('/proyectos/{proyectoId}/update-progress/{progreso}', [ProyectosController::class, 'updateProgress']);
+
 
 Route::get('proyectos/{id}/plandework/', [PDTController::class, 'show'])->name('proyectos.plandework.show');
 Route::get('proyectos/{id}/plandework/create', [PDTController::class, 'create'])->name('proyectos.plandework.create');
 Route::post('proyectos/{id}/plandework', [PDTController::class, 'store'])->name('proyectos.plandework.store');
+Route::delete('/plandetrabajo/{id}', [PDTController::class, 'destroy'])->name('plandetrabajo.destroy');
+
 Route::get('proyectos/evidencia/{id}', [ProyectosController::class, 'showProyecto'])->name('proyectos.evidencia.show');
-Route::post('proyectos/{id}/approve', [PDTController::class, 'approve']);
-Route::post('proyectos/{id}/reject', [PDTController::class, 'reject']);
 
 // Rutas para Evidencias
 Route::post('proyectos/evidencia/{id}/upload', [ProyectosController::class, 'uploadFiles'])->name('proyectos.evidencia.uploadFiles');

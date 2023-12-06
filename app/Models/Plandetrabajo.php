@@ -7,8 +7,25 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class Plandetrabajo
+ * 
+ * @property int $id_pdt
+ * @property int $id_proyecto
+ * @property int $id_Asesor
+ * @property string $nombre_actividad
+ * @property Carbon $fecha_inicio
+ * @property Carbon $fecha_fin
+ * 
+ * @property Asesore $asesore
+ * @property Proyecto $proyecto
+ * @property Collection|Archivo[] $archivos
+ *
+ * @package App\Models
+ */
 class Plandetrabajo extends Model
 {
 	protected $table = 'plandetrabajo';
@@ -38,5 +55,10 @@ class Plandetrabajo extends Model
 	public function proyecto()
 	{
 		return $this->belongsTo(Proyecto::class, 'id_proyecto');
+	}
+
+	public function archivos()
+	{
+		return $this->hasMany(Archivo::class, 'IDPDT');
 	}
 }

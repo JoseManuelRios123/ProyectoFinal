@@ -110,11 +110,12 @@ class AsesorController extends Controller
         $asesores = Asesore::find($id);
 
         if ($asesores->proyectos()->count() > 0) {
-            return redirect()->back()->with('errorA', 'No puedes eliminar este asesor porque está asociado a un proyecto.');
+            return response()->json(['message' => 'No puedes eliminar este asesor porque está asociado a un proyecto.'], 400);
         }
+
         $asesores->delete();
 
-        return redirect()->back()->with('status', 'Asesor eliminado exitosamente');
+        return response()->json(['message' => 'Asesor eliminado exitosamente.']);
     }
 }
 

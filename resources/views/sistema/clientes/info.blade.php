@@ -140,33 +140,3 @@
   document.getElementById('Codigo_CIUU{{$cliente->id_cliente}}').addEventListener('input', function() { validarCodigo_CIUUE('{{$cliente->id_cliente}}'); });
 </script>
 
-
-
-<!-- Agrega el enlace a SweetAlert en la sección head -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-<form action="{{ route('clientes.destroy', $cliente->id_cliente) }}" method="post" enctype="multipart/form-data" id="eliminarClienteForm{{$cliente->id_cliente}}">
-        @csrf
-        @method('DELETE')
-          <script>
-            function confirmarEliminacion(idCliente) {
-              Swal.fire({
-                title: 'Eliminar Cliente',
-                text: '¿Estás seguro de eliminar este cliente?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Sí, eliminar',
-                cancelButtonText: 'Cancelar'
-              }).then((result) => {
-                if (result.isConfirmed) {
-                  // Si el usuario confirma, enviar el formulario de eliminación
-                  document.getElementById('eliminarClienteForm' + idCliente).submit();
-                }
-              });
-            }
-          </script>
-</form>
-
-

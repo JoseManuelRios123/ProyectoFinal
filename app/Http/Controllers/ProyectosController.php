@@ -72,7 +72,20 @@ class ProyectosController extends Controller
 
     }
 
-    public function store(StoreProyectoRequest $request)
+    public function updateProgress($proyectoId, $progreso)
+    {
+        try {
+            $proyecto = Proyecto::findOrFail($proyectoId);
+            $proyecto->Progreso = $progreso;
+            $proyecto->save();
+
+            return response()->json(['message' => 'Progreso actualizado correctamente']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error al actualizar el progreso'], 500);
+        }
+    }
+
+    public function store(Request $request)
     {
         $request->validate([
             'idClientes' => 'required',
@@ -81,26 +94,26 @@ class ProyectosController extends Controller
             'Riesgos' => 'required',
         ]);
 
-        $proyectos = new Proyecto;
-        $proyectos->idClientes = $request->input('idClientes');
-        $proyectos->idAsesores = $request->input('idAsesores');
-        $proyectos->Nombre = $request->input('Nombre');
-        $proyectos->Riesgo = $request->input('Riesgos');
-        $proyectos->Progreso = $request->input('Progreso', 0);
-        $proyectos->save();
+        $proyecto = new Proyecto;
+        $proyecto->idClientes = $request->input('idClientes');
+        $proyecto->idAsesores = $request->input('idAsesores');
+        $proyecto->Nombre = $request->input('Nombre');
+        $proyecto->Riesgo = $request->input('Riesgos');
+        $proyecto->Progreso = $request->input('Progreso', 0);
+        $proyecto->save();
 
         $carpetas = ['hacer', 'planear', 'verificar', 'actuar'];
         foreach ($carpetas as $carpeta) {
-            Storage::makeDirectory('evidencia/' . $proyectos->id_Proyecto . '/' . $carpeta);
+            Storage::makeDirectory('evidencia/' . $proyecto->id_Proyecto . '/' . $carpeta);
             $nuevaCarpeta = new Carpeta();
             $nuevaCarpeta->nombre = $carpeta;
-            $nuevaCarpeta->id_Proyecto = $proyectos->idProyecto;
+            $nuevaCarpeta->id_Proyecto = $proyecto->idProyecto;
             $nuevaCarpeta->save();
         }
 
-
         return redirect()->back();
     }
+
 
     public function bulkStore(BulkStoreProyectoRequest $request){
         $bulk = collect($request->all())->map(function($arr, $key){
@@ -181,7 +194,9 @@ class ProyectosController extends Controller
                     $nuevoArchivo->nombre = $archivo->getClientOriginalName();
                     $nuevoArchivo->ruta = $rutaArchivo;
                     $nuevoArchivo->carpeta_id = Carpeta::where('id_Proyecto', $proyectos->idProyecto)->where('nombre', $carpeta)->first()->id_carpeta;
-                    $nuevoArchivo->user_id = $request->user()->id;
+
+                    $activityID = $request->input('IDPDT');
+                    $nuevoArchivo->IDPDT = $activityID;
 
                     $nuevoArchivo->save();
                 }
@@ -190,6 +205,8 @@ class ProyectosController extends Controller
 
         return redirect()->back();
     }
+
+
 
     public function downloadFile($id)
     {
@@ -271,9 +288,11 @@ class ProyectosController extends Controller
 
     public function destroy($id)
     {
-        $proyectos=Proyecto::find($id);
+        $proyectos = Proyecto::find($id);
+
         $proyectos->delete();
-        return redirect()->back()->with('status', 'Proyecto eliminado exitosamente');
+
+        return response()->json(['message' => 'Proyecto eliminado exitosamente.']);
     }
 
     

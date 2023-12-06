@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap4.min.css">
 <link rel="stylesheet" href="">
 @endsection
+
 @can('Ver Actividades')
 <div class="row">
     <div class="col-md-1"></div>
@@ -28,8 +29,7 @@
         </button>
         @endcan
         @can('Ver Carpetas')
-        <a class="btn btn-success float-right" href="{{ route('proyectos.evidencia.show', $proyectos->idProyecto) }}">Carpetas
-        </a>
+        <a class="btn btn-success float-right" href="{{ route('proyectos.evidencia.show', $proyectos->idProyecto) }}">Carpetas</a>
         @endcan
 
         <div class="table-responsive">
@@ -43,7 +43,6 @@
                         <th scope="col">Fecha de Inicio</th>
                         <th scope="col">Fecha de Finalización</th>
                         <th scope="col">Acciones</th>
-                        <th scope="col">Aprobación</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -64,7 +63,7 @@
                             </button>
                             @endcan
                             @can('Eliminar Actividades')
-                            <button type="button" class="btn btn-outline-danger" onclick="confirmarEliminacion('{{ $pdt->id_pdt }}')">
+                            <button type="button" class="btn btn-outline-danger" data-pdt-id="{{ $pdt->id_pdt }}" onclick="eliminarPDT(this)">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
                                     <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z" />
                                     <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z" />
@@ -72,20 +71,7 @@
                             </button>
                             @endcan
                         </td>
-                        <td>
-                            @can('Aprobar Actividades')
-                            <button type="button" class="btn btn-outline-success" onclick="approve('{{ $pdt->id_pdt }}')">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
-                                    <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022" />
-                                </svg>
-                            </button>
-                            <button type="button" class="btn btn-outline-danger" onclick="reject('{{ $pdt->id_pdt }}')">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
-                                    <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z" />
-                                </svg>
-                            </button>
-                            @endcan
-                        </td>
+                        
                     </tr>
                     @include('sistema.plandework.info')
                     @endforeach
@@ -97,9 +83,10 @@
     <div class="col-md-1"></div>
 </div>
 @endcan
-@endsection
-@section('js')
 
+@endsection
+
+@section('js')
 <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap4.min.js"></script>
@@ -117,32 +104,45 @@
             }
         });
     });
+    function eliminarPDT(btn) {
+    const pdtId = btn.getAttribute('data-pdt-id');
 
-    function approve(id) {
+    Swal.fire({
+        title: '¿Estás seguro?',
+        text: '¡No podrás revertir esto!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Sí, eliminarlo'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Realiza una solicitud AJAX para eliminar el PDT
+            var xhr = new XMLHttpRequest();
+            xhr.open('DELETE', `/plandetrabajo/${pdtId}`, true); // Ajusta la ruta según tu configuración
+            xhr.setRequestHeader('X-CSRF-TOKEN', '{{ csrf_token() }}'); // Asegúrate de incluir el token CSRF
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4) {
+                    console.log('HTTP status:', xhr.status);
 
-        $.ajax({
-            url: id + '/approve',
-            type: 'POST',
-            data: {
-                "_token": "{{ csrf_token() }}",
-            },
-            success: function(result) {
-                // Actualizar la interfaz de usuario según sea necesario
-            }
-        });
-    }
+                    if (xhr.status === 200) {
+                        var response = JSON.parse(xhr.responseText);
+                        console.log('Respuesta del servidor:', response);
+                        Swal.fire('¡Eliminado!', response.message, 'success');
 
-    function reject(id) {
-        $.ajax({
-            url: id + '/reject',
-            type: 'POST',
-            data: {
-                "_token": "{{ csrf_token() }}",
-            },
-            success: function(result) {
-                // Actualizar la interfaz de usuario según sea necesario
-            }
-        });
-    }
+                        // Recarga la página después de eliminar el PDT
+                        location.reload();
+                    } else {
+                        console.error('Error en la solicitud AJAX:', xhr.statusText);
+                        Swal.fire('Error', 'No se puede eliminar esta actividad', 'error');
+                    }
+                }
+            };
+            xhr.send();
+        }
+    });
+}
+
+
 </script>
 @endsection

@@ -87,26 +87,3 @@
 
  
 </script>
-
-<form action="{{route('proyectos.destroy',$proyecto->idProyecto)}}" method="post" enctype="multipart/form-data" id="eliminarProyectoForm{{$proyecto->idProyecto}}">
-        @csrf
-        @method('DELETE')<script>
-        function confirmarEliminacionProyecto(idProyecto) {
-          Swal.fire({
-            title: 'Eliminar Proyecto',
-            text: '¿Estás seguro de eliminar este proyecto?',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Sí, eliminar',
-            cancelButtonText: 'Cancelar'
-          }).then((result) => {
-            if (result.isConfirmed) {
-              // Envía el formulario de eliminación si el usuario confirma
-              document.getElementById('eliminarProyectoForm' + idProyecto).submit();
-            }
-          });
-        }
-      </script>
-</form>

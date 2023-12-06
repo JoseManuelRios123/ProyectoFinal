@@ -123,10 +123,12 @@ class ClienteController extends Controller
         $clientes = Cliente::find($id);
 
         if ($clientes->proyectos()->count() > 0) {
-            return redirect()->back()->with('error', 'No puedes eliminar este cliente porque está asociado a un proyecto.');
+            return response()->json(['message' => 'No puedes eliminar este cliente porque está asociado a un proyecto.'], 400);
         }
+
         $clientes->delete();
 
-        return redirect()->back()->with('status', 'Cliente eliminado exitosamente');
+        return response()->json(['message' => 'Cliente eliminado exitosamente.']);
     }
+
 }

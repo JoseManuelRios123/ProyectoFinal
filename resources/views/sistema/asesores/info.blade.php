@@ -85,27 +85,3 @@
     } 
   }
 </script>
-
-
-<form action="{{ route('asesores.destroy', $asesor->id_asesor) }}" method="post" enctype="multipart/form-data" id="eliminarAsesorForm{{ $asesor->id_asesor }}">
-        @csrf
-        @method('DELETE')
-        <script>
-          function confirmarEliminacion(idAsesor) {
-            Swal.fire({
-              title: 'Eliminar Asesor',
-              text: '¿Estás seguro de eliminar este asesor?',
-              icon: 'warning',
-              showCancelButton: true,
-              confirmButtonColor: '#d33',
-              cancelButtonColor: '#3085d6',
-              confirmButtonText: 'Sí, eliminar',
-              cancelButtonText: 'Cancelar'
-            }).then((result) => {
-              if (result.isConfirmed) {
-                document.getElementById('eliminarAsesorForm' + idAsesor).submit();
-              }
-            });
-          }
-        </script>
-</form>

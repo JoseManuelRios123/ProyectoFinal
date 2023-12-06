@@ -15,7 +15,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $nombre
  * @property string $ruta
  * @property int $carpeta_id
+ * @property int $IDPDT
  * 
+ * @property Plandetrabajo $plandetrabajo
  * @property Carpeta $carpeta
  *
  * @package App\Models
@@ -27,22 +29,24 @@ class Archivo extends Model
 	public $timestamps = false;
 
 	protected $casts = [
-		'carpeta_id' => 'int'
+		'carpeta_id' => 'int',
+		'IDPDT' => 'int'
 	];
 
 	protected $fillable = [
 		'nombre',
 		'ruta',
-		'carpeta_id'
+		'carpeta_id',
+		'IDPDT'
 	];
+
+	public function plandetrabajo()
+	{
+		return $this->belongsTo(Plandetrabajo::class, 'IDPDT');
+	}
 
 	public function carpeta()
 	{
 		return $this->belongsTo(Carpeta::class);
 	}
-	
-	public function usuario()
-    {
-        return $this->belongsTo(User::class, 'user_id');
-    }
 }

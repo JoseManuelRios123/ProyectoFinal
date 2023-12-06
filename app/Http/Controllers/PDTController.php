@@ -109,10 +109,16 @@ class PDTController extends Controller
      */
     public function destroy($id)
     {
-        $plandework=Plandetrabajo::find($id);
-        $plandework->delete();
-        return redirect()->back()->with('status', 'Actividad eliminada exitosamente');
-        //
+        $pdt = Plandetrabajo::find($id);
+
+        if (!$pdt) {
+            return response()->json(['message' => 'No se encontró el PDT'], 404);
+        }
+
+        $pdt->delete();
+
+        return response()->json(['message' => 'PDT eliminado exitosamente']);
     }
 
 }
+

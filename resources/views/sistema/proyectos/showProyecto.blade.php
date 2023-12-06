@@ -29,6 +29,13 @@
                         <br>
                         <div class="form-group">
                             <button type="submit" class="btn btn-outline-primary hh">Subir</button>
+                            <select name="IDPDT" id="IDPDT" class="form-control" required>
+                                <option value="">Seleccione una actividad</option>
+                                @foreach ($plandework as $pdt)
+                                    <option value="{{ $pdt->id_pdt }}">{{ $pdt->nombre_actividad }}</option>
+                                @endforeach
+                            </select>
+
                             <select id="carpeta" name="carpeta" class="form-control w-fit">
                                 <option value="">Seleccione una Carpeta</option>
                                 <option value="planear">Planear</option>
@@ -41,6 +48,7 @@
                                 <label class="custom-file-label" id="customFileLabel" for="customFile">Seleccionar archivos</label>
                             </div>
                         </div>
+                        
                         <script>
                             document.getElementById("customFile").addEventListener("change", function() {
                                 var fileName = this.files.length > 1 ? this.files.length + " archivos seleccionados" : this.files[0].name;
@@ -86,34 +94,42 @@
                                                                 <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z" />
                                                             </svg>
                                                         </a>
-                                                        <div class="modal fade" id="show{{$archivo->id_archivo}}" tabindex="-1" role="dialog" aria-labelledby="detallesArchivoModalLabel" aria-hidden="true">
-                                                            <div class="modal-dialog" role="document">
+                                                        <div class="modal fade" id="show{{$archivo->id_archivo}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                            <div class="modal-dialog">
                                                                 <div class="modal-content">
                                                                     <div class="modal-header">
-                                                                        <h5 class="modal-title" id="detallesArchivoModalLabel">Detalles del Archivo</h5>
-                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                        <h5 class="modal-title">Detalles del archivo</h5>
+                                                                        <button type="button" class="close" data-bs-dismiss="modal" aria-bs-label="Close">
                                                                             <span aria-hidden="true">&times;</span>
                                                                         </button>
                                                                     </div>
                                                                     <div class="modal-body">
                                                                         <p>{{ $archivo->nombre }} </p>
-                                                                        <p>Subido por: {{ $archivo->usuario->name }}</p>
+
+                                                                        <!-- Check if $archivo has associated activity information -->
+                                                                        @if($archivo->plandetrabajo)
+                                                                            <p>Asesor: {{ $archivo->plandetrabajo->asesore->nombre_asesor }}</p>
+                                                                            <p>Actividad: {{ $archivo->plandetrabajo->nombre_actividad }}</p>
+                                                                        @else
+                                                                            <p>No se encontró información de la actividad asociada</p>
+                                                                        @endif
                                                                     </div>
                                                                     <div class="modal-footer">
                                                                         @can('Descargar Evidencias')
-                                                                        <a class="btn btn-outline-primary" href="{{ route('proyectos.archivos.downloadFile', ['id' => $archivo->id_archivo]) }}">
-                                                                            Descargar
-                                                                        </a>
+                                                                            <a class="btn btn-outline-primary" href="{{ route('proyectos.archivos.downloadFile', ['id' => $archivo->id_archivo]) }}">
+                                                                                Descargar
+                                                                            </a>
                                                                         @endcan
                                                                         @can('Eliminar Evidencias')
-                                                                        <a class="btn btn-outline-danger" href="{{ route('proyectos.archivos.deleteFile', ['id' => $archivo->id_archivo]) }}">
-                                                                            Eliminar
-                                                                        </a>
+                                                                            <a class="btn btn-outline-danger" href="{{ route('proyectos.archivos.deleteFile', ['id' => $archivo->id_archivo]) }}">
+                                                                                Eliminar
+                                                                            </a>
                                                                         @endcan
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
+
                                                         @endcan
                                                         @endforeach
                                                     </td>
@@ -127,29 +143,36 @@
                                                                 <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z" />
                                                             </svg>
                                                         </a>
-                                                        <div class="modal fade" id="show{{$archivo->id_archivo}}" tabindex="-1" role="dialog" aria-labelledby="detallesArchivoModalLabel" aria-hidden="true">
-                                                            <div class="modal-dialog" role="document">
+                                                        <div class="modal fade" id="show{{$archivo->id_archivo}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                            <div class="modal-dialog">
                                                                 <div class="modal-content">
                                                                     <div class="modal-header">
-                                                                        <h5 class="modal-title" id="detallesArchivoModalLabel">Detalles del Archivo</h5>
-                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                        <h5 class="modal-title">Detalles del archivo</h5>
+                                                                        <button type="button" class="close" data-bs-dismiss="modal" aria-bs-label="Close">
                                                                             <span aria-hidden="true">&times;</span>
                                                                         </button>
                                                                     </div>
                                                                     <div class="modal-body">
                                                                         <p>{{ $archivo->nombre }} </p>
-                                                                        <p>Subido por: {{ $archivo->usuario->name }}</p>
+
+                                                                        <!-- Check if $archivo has associated activity information -->
+                                                                        @if($archivo->plandetrabajo)
+                                                                            <p>Asesor: {{ $archivo->plandetrabajo->asesore->nombre_asesor }}</p>
+                                                                            <p>Actividad: {{ $archivo->plandetrabajo->nombre_actividad }}</p>
+                                                                        @else
+                                                                            <p>No se encontró información de la actividad asociada</p>
+                                                                        @endif
                                                                     </div>
                                                                     <div class="modal-footer">
                                                                         @can('Descargar Evidencias')
-                                                                        <a class="btn btn-outline-primary" href="{{ route('proyectos.archivos.downloadFile', ['id' => $archivo->id_archivo]) }}">
-                                                                            Descargar
-                                                                        </a>
+                                                                            <a class="btn btn-outline-primary" href="{{ route('proyectos.archivos.downloadFile', ['id' => $archivo->id_archivo]) }}">
+                                                                                Descargar
+                                                                            </a>
                                                                         @endcan
                                                                         @can('Eliminar Evidencias')
-                                                                        <a class="btn btn-outline-danger" href="{{ route('proyectos.archivos.deleteFile', ['id' => $archivo->id_archivo]) }}">
-                                                                            Eliminar
-                                                                        </a>
+                                                                            <a class="btn btn-outline-danger" href="{{ route('proyectos.archivos.deleteFile', ['id' => $archivo->id_archivo]) }}">
+                                                                                Eliminar
+                                                                            </a>
                                                                         @endcan
                                                                     </div>
                                                                 </div>
@@ -169,29 +192,36 @@
                                                                 <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z" />
                                                             </svg>
                                                         </a>
-                                                        <div class="modal fade" id="show{{$archivo->id_archivo}}" tabindex="-1" role="dialog" aria-labelledby="detallesArchivoModalLabel" aria-hidden="true">
-                                                            <div class="modal-dialog" role="document">
+                                                        <div class="modal fade" id="show{{$archivo->id_archivo}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                            <div class="modal-dialog">
                                                                 <div class="modal-content">
                                                                     <div class="modal-header">
-                                                                        <h5 class="modal-title" id="detallesArchivoModalLabel">Detalles del Archivo</h5>
-                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                        <h5 class="modal-title">Detalles del archivo</h5>
+                                                                        <button type="button" class="close" data-bs-dismiss="modal" aria-bs-label="Close">
                                                                             <span aria-hidden="true">&times;</span>
                                                                         </button>
                                                                     </div>
                                                                     <div class="modal-body">
                                                                         <p>{{ $archivo->nombre }} </p>
-                                                                        <p>Subido por: {{ $archivo->usuario->name }}</p>
+
+                                                                        <!-- Check if $archivo has associated activity information -->
+                                                                        @if($archivo->plandetrabajo)
+                                                                            <p>Asesor: {{ $archivo->plandetrabajo->asesore->nombre_asesor }}</p>
+                                                                            <p>Actividad: {{ $archivo->plandetrabajo->nombre_actividad }}</p>
+                                                                        @else
+                                                                            <p>No se encontró información de la actividad asociada</p>
+                                                                        @endif
                                                                     </div>
                                                                     <div class="modal-footer">
                                                                         @can('Descargar Evidencias')
-                                                                        <a class="btn btn-outline-primary" href="{{ route('proyectos.archivos.downloadFile', ['id' => $archivo->id_archivo]) }}">
-                                                                            Descargar
-                                                                        </a>
+                                                                            <a class="btn btn-outline-primary" href="{{ route('proyectos.archivos.downloadFile', ['id' => $archivo->id_archivo]) }}">
+                                                                                Descargar
+                                                                            </a>
                                                                         @endcan
                                                                         @can('Eliminar Evidencias')
-                                                                        <a class="btn btn-outline-danger" href="{{ route('proyectos.archivos.deleteFile', ['id' => $archivo->id_archivo]) }}">
-                                                                            Eliminar
-                                                                        </a>
+                                                                            <a class="btn btn-outline-danger" href="{{ route('proyectos.archivos.deleteFile', ['id' => $archivo->id_archivo]) }}">
+                                                                                Eliminar
+                                                                            </a>
                                                                         @endcan
                                                                     </div>
                                                                 </div>
@@ -210,29 +240,36 @@
                                                                 <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z" />
                                                             </svg>
                                                         </a>
-                                                        <div class="modal fade" id="show{{$archivo->id_archivo}}" tabindex="-1" role="dialog" aria-labelledby="detallesArchivoModalLabel" aria-hidden="true">
-                                                            <div class="modal-dialog" role="document">
+                                                        <div class="modal fade" id="show{{$archivo->id_archivo}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                            <div class="modal-dialog">
                                                                 <div class="modal-content">
                                                                     <div class="modal-header">
-                                                                        <h5 class="modal-title" id="detallesArchivoModalLabel">Detalles del Archivo</h5>
-                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                        <h5 class="modal-title">Detalles del archivo</h5>
+                                                                        <button type="button" class="close" data-bs-dismiss="modal" aria-bs-label="Close">
                                                                             <span aria-hidden="true">&times;</span>
                                                                         </button>
                                                                     </div>
                                                                     <div class="modal-body">
                                                                         <p>{{ $archivo->nombre }} </p>
-                                                                        <p>Subido por: {{ $archivo->usuario->name }}</p>
+
+                                                                        <!-- Check if $archivo has associated activity information -->
+                                                                        @if($archivo->plandetrabajo)
+                                                                            <p>Asesor: {{ $archivo->plandetrabajo->asesore->nombre_asesor }}</p>
+                                                                            <p>Actividad: {{ $archivo->plandetrabajo->nombre_actividad }}</p>
+                                                                        @else
+                                                                            <p>No se encontró información de la actividad asociada</p>
+                                                                        @endif
                                                                     </div>
                                                                     <div class="modal-footer">
                                                                         @can('Descargar Evidencias')
-                                                                        <a class="btn btn-outline-primary" href="{{ route('proyectos.archivos.downloadFile', ['id' => $archivo->id_archivo]) }}">
-                                                                            Descargar
-                                                                        </a>
+                                                                            <a class="btn btn-outline-primary" href="{{ route('proyectos.archivos.downloadFile', ['id' => $archivo->id_archivo]) }}">
+                                                                                Descargar
+                                                                            </a>
                                                                         @endcan
                                                                         @can('Eliminar Evidencias')
-                                                                        <a class="btn btn-outline-danger" href="{{ route('proyectos.archivos.deleteFile', ['id' => $archivo->id_archivo]) }}">
-                                                                            Eliminar
-                                                                        </a>
+                                                                            <a class="btn btn-outline-danger" href="{{ route('proyectos.archivos.deleteFile', ['id' => $archivo->id_archivo]) }}">
+                                                                                Eliminar
+                                                                            </a>
                                                                         @endcan
                                                                     </div>
                                                                 </div>

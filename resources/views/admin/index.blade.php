@@ -27,13 +27,27 @@
 
     <div class="col-lg-3 col-6">
         <!-- small card -->
+        <div class="small-box bg-danger">
+            <div class="inner">
+                <h3>{{ $usuariosDesabilitados }}</h3>
+                <p>Usuarios desabilitados</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <a href="users" class="small-box-footer">
+                Más información <i class="fas fa-arrow-circle-right"></i>
+            </a>
+        </div>
+    </div>
+    <div class="col-lg-3 col-6">
+        <!-- small card -->
 
         <div class="small-box bg-primary">
             <div class="inner">
                 <h3>{{ $cantidadProyectos }}</h3>
 
-
-                <p>Proyectos creados</p>
+                <p>Proyectos en ejecución</p>
             </div>
             <div class="icon">
                 <i class="fas fa-project-diagram"></i>
@@ -45,30 +59,15 @@
     </div>
     <div class="col-lg-3 col-6">
         <!-- small card -->
-        <div class="small-box bg-danger">
-            <div class="inner">
-                <h3>{{ $cantidadClientes }}</h3>
-                <p>Clientes creados</p>
-            </div>
-            <div class="icon">
-                <i class="fas fa-users"></i>
-            </div>
-            <a href="clientes" class="small-box-footer">
-                Más información <i class="fas fa-arrow-circle-right"></i>
-            </a>
-        </div>
-    </div>
-    <div class="col-lg-3 col-6">
-        <!-- small card -->
         <div class="small-box bg-success">
             <div class="inner">
-                <h3>{{ $cantidadAsesores }}</h3>
-                <p>Asesores creados</p>
+                <h3>{{ $cantidadProyectosTerminados }}</h3>
+                <p>Proyectos terminados</p>
             </div>
             <div class="icon">
                 <i class="fas fa-user-tie"></i>
             </div>
-            <a href="asesores" class="small-box-footer">
+            <a href="proyectos" class="small-box-footer">
                 Más información <i class="fas fa-arrow-circle-right"></i>
             </a>
         </div>

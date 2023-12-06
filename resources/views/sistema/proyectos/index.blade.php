@@ -35,9 +35,12 @@
                         <th scope="col">Asesor a Cargo</th>
                         <th scope="col">Nombre Proyecto</th>
                         <th scope="col">Riesgo</th>
-                        <th scope="col">Progreso</th>
                         <th scope="col">Acciones</th>
-
+                        <th scope="col">Progreso</th>
+                        @can('Aprobar Actividades')
+                        <th scope="col">Aprobado</th>
+                        <th scope="col">No Aprobado</th>
+                        @endcan
                     </tr>
                 </thead>
                 <tbody>
@@ -48,11 +51,6 @@
                         <td> {{$proyecto->asesore->nombre_asesor}} </td>
                         <td> {{$proyecto->Nombre}} </td>
                         <td> {{$proyecto->Riesgo}} </td>
-                        <td>
-                            <div class="progress">
-                                <div class="progress-bar" role="progressbar" style="width: '{{$proyecto->Progreso}};'" aria-valuenow="{{$proyecto->Progreso}}" aria-valuemin="0" aria-valuemax="100">{{$proyecto->Progreso}}%</div>
-                            </div>
-                        </td>
                         <td>
                             @can('Ver Actividades')
                             <a class="btn btn-outline-success" href="{{ route('proyectos.show', $proyecto->idProyecto) }}">
@@ -71,7 +69,7 @@
                             </button>
                             @endcan
                             @can('Eliminar Proyectos')
-                            <button type="button" class="btn btn-outline-danger" onclick="confirmarEliminacionProyecto('{{$proyecto->idProyecto}}')">
+                            <button type="button" class="btn btn-outline-danger" data-proyecto-id="{{ $proyecto->idProyecto }}" onclick="eliminarProyecto(this)">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
                                     <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z" />
                                     <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z" />
@@ -79,6 +77,19 @@
                             </button>
                             @endcan
                         </td>
+                        <td>
+                          <div class="progress">
+                             <div class="progress-bar" id="progressBar_{{ $proyecto->idProyecto }}" name="Progreso" role="progressbar" style="width: {{ $proyecto->Progreso }}%;" aria-valuenow="{{ $proyecto->Progreso }}" aria-valuemin="0" aria-valuemax="100">{{ $proyecto->Progreso }}%</div>
+                            </div>
+                        </td>
+                        @can('Aprobar Actividades')
+                        <td>
+                            <button type="button" class="btn btn-outline-success" onclick="updateProgress('{{ $proyecto->idProyecto }}', 'aprobado')">Aprobado</button>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-outline-danger" onclick="updateProgress('{{ $proyecto->idProyecto }}', 'no_aprobado')">No Aprobado</button>
+                        </td>
+                        @endcan
                     </tr>
                     @include('sistema.proyectos.info')
                     @endforeach
@@ -108,5 +119,62 @@
             }
         });
     });
+
+    function updateProgress(proyectoId, status) {
+    const progressValue = (status === 'aprobado') ? 100 : 0;
+    const progressBar = document.querySelector(`#progressBar_${proyectoId}`);
+
+    // Actualizar la barra de progreso en el frontend
+    progressBar.style.width = `${progressValue}%`;
+    progressBar.innerHTML = `${progressValue}%`;
+
+    // Hacer la solicitud al servidor para actualizar el progreso en la base de datos
+    fetch(`/proyectos/${proyectoId}/update-progress/${progressValue}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}', // Asegúrate de incluir el token CSRF
+        },
+    })
+    .then(response => response.json())
+    .then(data => console.log(data))
+    .catch(error => console.error('Error:', error));
+}
+
+    function eliminarProyecto(btn) {
+        const proyectoId = btn.getAttribute('data-proyecto-id');
+
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: '¡No podrás revertir esto!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sí, eliminarlo'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Realiza una solicitud AJAX para eliminar el cliente
+                var xhr = new XMLHttpRequest();
+                xhr.open('DELETE', `/proyectos/${proyectoId}`, true);
+                xhr.setRequestHeader('X-CSRF-TOKEN', '{{ csrf_token() }}'); // Asegúrate de incluir el token CSRF
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState == 4) {
+                        if (xhr.status === 200) {
+                            // Maneja la respuesta del controlador
+                            var response = JSON.parse(xhr.responseText);
+                            Swal.fire('¡Eliminado!', response.message, 'success');
+                            // Recarga la página después de eliminar el cliente
+                            location.reload();
+                        } else {
+                            // Maneja errores
+                            Swal.fire('Error', 'No se puede eliminar este proyecto.', 'error');
+                        }
+                    }
+                };
+                xhr.send();
+            }
+        });
+    }
 </script>
 @endsection

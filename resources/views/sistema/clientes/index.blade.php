@@ -68,7 +68,7 @@
                             </button>
                             @endcan
                             @can('Eliminar Cliente')
-                            <button type="button" class="btn btn-outline-danger" onclick="confirmarEliminacion('{{ $cliente->id_cliente }}')">
+                            <button type="button" class="btn btn-outline-danger" data-cliente-id="{{ $cliente->id_cliente }}" onclick="eliminarCliente(this)">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
                                     <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z" />
                                     <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z" />
@@ -95,6 +95,9 @@
 <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap4.min.js"></script>
 <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
 <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap4.min.js"></script>
+<!-- Incluye SweetAlert2 CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
     $(document).ready(function() {
         $('#Clientes').DataTable({
@@ -105,5 +108,41 @@
             }
         });
     });
+    
+    function eliminarCliente(btn) {
+        const clienteId = btn.getAttribute('data-cliente-id');
+
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: '¡No podrás revertir esto!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sí, eliminarlo'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Realiza una solicitud AJAX para eliminar el cliente
+                var xhr = new XMLHttpRequest();
+                xhr.open('DELETE', `/clientes/${clienteId}`, true);
+                xhr.setRequestHeader('X-CSRF-TOKEN', '{{ csrf_token() }}'); // Asegúrate de incluir el token CSRF
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState == 4) {
+                        if (xhr.status === 200) {
+                            // Maneja la respuesta del controlador
+                            var response = JSON.parse(xhr.responseText);
+                            Swal.fire('¡Eliminado!', response.message, 'success');
+                            // Recarga la página después de eliminar el cliente
+                            location.reload();
+                        } else {
+                            // Maneja errores
+                            Swal.fire('Error', 'El cliente esta asociado a un proyecto.', 'error');
+                        }
+                    }
+                };
+                xhr.send();
+            }
+        });
+    }
 </script>
 @endsection

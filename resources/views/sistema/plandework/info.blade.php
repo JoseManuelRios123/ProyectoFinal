@@ -113,30 +113,3 @@
     console.log('Actividad editada con éxito. ID:', id);
   }
 </script>
-
-
-
-
-<form action="{{ route('plandework.destroy', $pdt->id_pdt) }}" method="post" enctype="multipart/form-data" id="eliminarPDTForm{{$pdt->id_pdt}}">
-  @csrf
-  @method('DELETE')
-  <script>
-    function confirmarEliminacion(idPDT) {
-      Swal.fire({
-        title: 'Eliminar Actividad',
-        text: '¿Estás seguro de eliminar este proyecto?',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Sí, eliminar',
-        cancelButtonText: 'Cancelar'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          // Envía el formulario de eliminación si el usuario confirma
-          document.getElementById('eliminarPDTForm' + idPDT).submit();
-        }
-      });
-    }
-  </script>
-</form>

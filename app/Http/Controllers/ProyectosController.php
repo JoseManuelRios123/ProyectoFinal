@@ -281,7 +281,7 @@ class ProyectosController extends Controller
         $proyectos->idAsesores = $request->input('idAsesores');
         $proyectos->Nombre = $request->input('Nombre');
         $proyectos->Riesgo = $request->input('Riesgos');
-        $proyectos->Progreso = $request->input('Progreso');
+        $proyectos->Progreso = $request->input('Progreso', 0);
         $proyectos->update($request->all());
         return redirect()->back();
     }

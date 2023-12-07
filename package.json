@@ -19,6 +19,8 @@
         "vite": "^4.0.0"
     },
     "dependencies": {
+        "@capacitor/cli": "^5.5.1",
+        "@capacitor/core": "^5.5.1",
         "datatables.net-bs4": "^1.13.8",
         "datatables.net-buttons-bs4": "^2.4.2",
         "datatables.net-dt": "^1.13.8",

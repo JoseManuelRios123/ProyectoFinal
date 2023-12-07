@@ -7,7 +7,6 @@ use App\Models\Asesore;
 use App\Models\Proyecto;
 use App\Models\User;
 use Illuminate\Http\Request;
-use ConsoleTVs\Charts\Classes\Chartjs\Chart;
 
 class AdminController extends Controller
 {
@@ -19,8 +18,8 @@ class AdminController extends Controller
         $usuariosDes = User::where('status', 0)->get();
         $usuariosDesabilitados = $usuariosDes->count();
 
-        $proyectos = Proyecto::all();
-        $cantidadProyectos = Proyecto::count(); // Obtén la cantidad de proyectos
+        $proyectos = Proyecto::where('Progreso', 0)->get();
+        $cantidadProyectos = $proyectos->count(); // Obtén la cantidad de proyectos
         $clientes = Cliente::all();
         $cantidadClientes = $clientes->count(); // Obtén la cantidad de clientes
         $asesores = Asesore::all();
@@ -37,7 +36,7 @@ class AdminController extends Controller
                 'text' => 'Cantidad de Clientes, Asesores, Proyectos y Usuarios'
             ],
             'xAxis' => [
-                'categories' => ['Usuarios', 'Clientes', 'Asesores', 'Proyectos', 'Proyectos terminados']
+                'categories' => ['Usuarios', 'Clientes', 'Asesores', 'Proyectos en ejecución', 'Proyectos terminados']
             ],
             'yAxis' => [
                 'title' => [
